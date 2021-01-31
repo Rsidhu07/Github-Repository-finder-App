@@ -1,0 +1,31 @@
+.SearchBar{
+    display: flex;
+    flex-direction: column;
+}
+
+.SearchBar input{
+    display: flex;
+    border-radius: 2rem;
+    outline: none;
+    text-align: center;
+    padding: 0.5rem;
+    margin-top: 2rem;
+    border-color: blueviolet;
+    border: 2px solid;
+    width: 38rem;
+    background-color: rgb(178, 203, 241);
+}
+
+.result-container{
+    background-color: rgb(178, 203, 241);
+    border-color: blueviolet;
+    display: flex;
+    flex-direction: column;
+    border-radius: 2rem;
+    align-items: center;
+    margin-top: 0.5rem;
+
+}
+.result-container p{
+    cursor: pointer;
+}
