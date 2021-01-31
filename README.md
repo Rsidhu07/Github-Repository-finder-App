@@ -1,6 +1,8 @@
-# Getting Started with Create React App
+# Getting Started with Github-Repository-finder-App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+In this app you can search for any repository on github made with JavaScript Language and see all the Issues of Repos if any.
+You can also view comments for particular repos.
+You can easily see if any repo has issues, comments on that issues or not.
 
 ## Available Scripts
 
