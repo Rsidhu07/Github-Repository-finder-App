@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './SearchBar.css';
 import {NavLink} from 'react-router-dom';
+import {connect} from 'react-redux';
+import { updateRepAndOwnerName } from '../../store/actions';
 
 const debounce = (func, del) => { 
     let debounceTimer; 
@@ -13,7 +15,7 @@ const debounce = (func, del) => {
     } 
 };
 
-export default class SearchBar extends Component {
+class SearchBar extends Component {
 
     constructor(props){
         super(props);
@@ -23,6 +25,14 @@ export default class SearchBar extends Component {
             loading: false
         };
     }  
+
+    componentWillUnmount(){
+       
+    }
+
+    onRepClickHandler =(rep) => {
+        this.props.onUpdateRepAndOwnerName(rep.name, rep.owner.login);
+    }
 
     onInputChangeHandler = debounce((e)=>{
 
@@ -62,7 +72,7 @@ export default class SearchBar extends Component {
                 <div className='result-container'>
                     {this.state.loading ? <p>loading...</p> :
                     this.state.results.map((item) => {
-                       return ( <p key= {item.id}>
+                       return ( <p onClick={()=>this.onRepClickHandler(item)} key= {item.id}>
                             {item.has_issues ?<NavLink to={`/issuesView/${item.owner.login}/${item.name}/issues`}>
                             {item.name}</NavLink> : item.name }
                             {!item.has_issues && ' No issues'}
@@ -74,3 +84,17 @@ export default class SearchBar extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        ownerName: state.repOwnerName ,
+        repName: state.repName
+    }
+}
+
+const mapDispatchToProps = dispatch =>{ 
+    return {
+        onUpdateRepAndOwnerName:  (repName, ownerName)=>{dispatch(updateRepAndOwnerName(repName,ownerName))}
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

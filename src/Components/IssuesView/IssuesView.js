@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './IssuesView.css';
 import { withRouter } from 'react-router-dom';
 import {NavLink} from 'react-router-dom';
+import { connect } from 'react-redux';
+import { updateIssueNumber } from '../../store/actions';
 
  class IssuesView extends Component {
 
@@ -10,18 +12,28 @@ import {NavLink} from 'react-router-dom';
         loading: false
     }
 
+    onIssueClickHandler = (issueNumber) =>{
+        this.props.onUpdateIssueNumber(issueNumber);
+    }
+
     componentDidMount(){
         
         this.setState({
             loading:true
         });
+        let fetchUrl ='';
+
+        if(this.props.ownerName === ''){
+           
+            const {location} = this.props.history;
+            const getRepOwnerNameFromUrl = location.pathname.substring(12);
+             fetchUrl = `https://api.github.com/repos/${getRepOwnerNameFromUrl}`;
+        } else {
+            fetchUrl = `https://api.github.com/repos/${this.props.ownerName}/${this.props.repName}/issues`;
+        }
         
-        const {location} = this.props.history;
-        const getRepOwnerNameFromUrl = location.pathname.substring(12);
 
-        console.log('props are ===>>', getRepOwnerNameFromUrl);
-
-        fetch(`https://api.github.com/repos/${getRepOwnerNameFromUrl}`)
+        fetch(fetchUrl)
             .then(response => response.json())
             .then(result => {
                 this.setState({
@@ -46,7 +58,7 @@ import {NavLink} from 'react-router-dom';
                     {this.state.loading ? <h3>Loading Issues....</h3> :
                         this.state.issues.map(issue => {
                         
-                        return (<p key ={issue.id} className= {issue.comments > 0 ? 'clickable' : undefined}> 
+                        return (<p onClick = {()=> this.onIssueClickHandler(issue.number)} key ={issue.id} className= {issue.comments > 0 ? 'clickable' : undefined}> 
                         { issue.comments > 0 ? 
                         <NavLink to={`/issueDetails/${issue.repository_url.substring(29)}/issues/${issue.number}/comments`}>
                             {issue.title}</NavLink> :
@@ -65,4 +77,17 @@ import {NavLink} from 'react-router-dom';
     }
 }
 
-export default withRouter(IssuesView);
+const mapStateToProps = state => {
+    return {
+        ownerName: state.repOwnerName ,
+        repName: state.repName
+    }
+}
+
+const mapDispatchToProps = dispatch =>{ 
+    return {
+        onUpdateIssueNumber:  (issueNumber)=>{dispatch(updateIssueNumber(issueNumber))}
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(withRouter(IssuesView));

@@ -58,4 +58,5 @@ class IssueDetails extends Component {
     }
 }
 
+
 export default withRouter(IssueDetails);
